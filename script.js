@@ -10,15 +10,41 @@ function startGame() {
 }
 
 function shuffleCups() {
-    // Bardakları karıştırma animasyonu (basit bir şekilde yapılıyor)
     const cups = document.querySelectorAll('.cup');
-    cups.forEach(cup => {
-        cup.style.order = Math.floor(Math.random() * 3) + 1;
-    });
+    const moves = [
+        [1, 2],
+        [2, 3],
+        [1, 3],
+        [2, 1],
+        [3, 1],
+        [3, 2]
+    ];
 
-    setTimeout(() => {
-        gameInProgress = false;
-    }, 2000); // 2 saniye sonra karıştırma biter
+    let i = 0;
+
+    function moveCups() {
+        if (i >= moves.length) {
+            gameInProgress = false;
+            return;
+        }
+
+        const [first, second] = moves[i];
+        const firstCup = document.getElementById(`cup${first}`);
+        const secondCup = document.getElementById(`cup${second}`);
+
+        firstCup.classList.add('moving');
+        secondCup.classList.add('moving');
+
+        setTimeout(() => {
+            firstCup.classList.remove('moving');
+            secondCup.classList.remove('moving');
+            [firstCup.style.order, secondCup.style.order] = [secondCup.style.order, firstCup.style.order];
+            i++;
+            setTimeout(moveCups, 500);
+        }, 500);
+    }
+
+    moveCups();
 }
 
 function checkCup(selectedCup) {
